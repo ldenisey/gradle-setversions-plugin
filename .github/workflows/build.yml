@@ -1,0 +1,94 @@
+# GitHub Actions Workflow created for testing and preparing the plugin release in following steps:
+# - validate Gradle Wrapper,
+# - run build tasks.
+#
+# Workflow is triggered on push and pull_request events.
+#
+# Docs:
+# - GitHub Actions: https://help.github.com/en/actions
+#
+##
+
+name: Build
+on: [ push, pull_request ]
+jobs:
+
+  check:
+    name: Check
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.properties.outputs.version }}
+      changelog: ${{ steps.properties.outputs.changelog }}
+    steps:
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: 15
+      - uses: actions/checkout@v2
+      - uses: gradle/wrapper-validation-action@v1.0.3
+
+      # Export build variables
+      - name: Export Properties
+        id: properties
+        shell: bash
+        run: |
+          PROPERTIES="$(./gradlew properties --console=plain -q)"
+          VERSION="$(echo "$PROPERTIES" | grep "^version:" | cut -f2- -d ' ')"
+          CHANGELOG="$(./gradlew getChangelog --unreleased --no-header --console=plain -q)"
+          CHANGELOG="${CHANGELOG//'%'/'%25'}"
+          CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
+          CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
+
+          echo "::set-output name=version::$VERSION"
+          echo "::set-output name=changelog::$CHANGELOG"
+
+  build:
+    name: Build
+    needs: check
+    strategy:
+      matrix:
+        platform: [ ubuntu-latest, macos-latest, windows-latest ]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: 15
+      - uses: actions/checkout@v2
+
+      # Build
+      - name: Build
+        run: ./gradlew build
+
+  # Prepare a pre release for GitHub Releases page for the manual verification
+  # If accepted and published, release workflow will be triggered to create final release
+  preRelease:
+    name: Pre release
+    if: github.event_name != 'pull_request' && contains(github.ref, 'main')
+    needs: [ check, build ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      # Delete existing release if needed
+      - name: Delete previous release
+        id: deletePreviousRelease
+        uses: dev-drprasad/delete-tag-and-release@v0.2.0
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ needs.check.outputs.version }}
+
+      # Create new pre release - which is not publicly visible and requires manual acceptance
+      - name: Create Pre Release
+        id: createPreRelease
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          prerelease: true
+          name: ${{ needs.check.outputs.version }}
+          tag: ${{ needs.check.outputs.version }}
+          commit: ${{ env.GITHUB_SHA }}
+          body: ${{ needs.check.outputs.changelog }}
+          token: ${{ secrets.GITHUB_TOKEN }}

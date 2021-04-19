@@ -6,7 +6,7 @@ repositories {
 
 plugins {
     `java-gradle-plugin`
-    kotlin("jvm") version "1.4.31"
+    kotlin("jvm") version "1.4.32"
 
     id("org.jetbrains.changelog") version "1.1.2"
 

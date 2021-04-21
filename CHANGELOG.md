@@ -4,4 +4,16 @@
 
 ## [Unreleased]
 ### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+## [1.0.1-SNAPSHOT]
+### Added
 - Initial version

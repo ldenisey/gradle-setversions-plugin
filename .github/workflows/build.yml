@@ -61,7 +61,7 @@ jobs:
         run: ./gradlew build
 
   # Prepare a pre release for GitHub Releases page for the manual verification
-  # If accepted and published, release workflow will be triggered to create final release
+  # Use manual promote release workflow to create final release
   preRelease:
     name: Pre release
     if: github.event_name != 'pull_request' && contains(github.ref, 'main')

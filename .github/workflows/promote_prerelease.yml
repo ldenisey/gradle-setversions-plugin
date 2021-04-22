@@ -1,5 +1,5 @@
 # GitHub Actions Workflow to handle the release process based on the pre release prepared with the Build workflow.
-# Will delete the release generated from the pre release and build a new one with version incrementation.
+# Will delete the latest pre release and build a new release with version incrementation.
 
 name: PromotePreRelease
 on: [ workflow_dispatch ]
@@ -35,12 +35,10 @@ jobs:
           echo "::set-output name=baseVersion::$VERSION"
 
       # Prepare version for release
-      #- name: Trim dev suffix
-      #  id: setVersions
-      #  shell: bash
-      #  run: ./gradlew setversions --suffix=false
-      - shell: bash
-        run: sed -i 's/version = "\([0-9]\.[0-9]\.[0-9]\)-SNAPSHOT"/version = "\1"/' build.gradle.kts
+      - name: Trim dev suffix
+        id: setVersions
+        shell: bash
+        run: ./gradlew setversions --suffix=false
 
       # Export build variables
       - name: Export new commit properties
@@ -126,12 +124,10 @@ jobs:
           ref: ${{ github.event.ref }}
 
       # Prepare version for release
-      #- name: Increment version for dev
-      #  id: setVersions
-      #  shell: bash
-      #  run: ./gradlew setversions --suffix=true --increment=technical
-      - shell: bash
-        run: sed -i 's/version = "\([0-9]\.[0-9]\.[0-9]\)"/version = "1.0.1-SNAPSHOT"/' build.gradle.kts
+      - name: Increment version for dev
+        id: setVersions
+        shell: bash
+        run: ./gradlew setversions --suffix=true --increment=technical
 
       # Update Unreleased section with the current version
       - name: Patch Changelog

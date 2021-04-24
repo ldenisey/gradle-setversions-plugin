@@ -20,10 +20,10 @@ jobs:
           java-version: 15
       - uses: actions/checkout@v2
         with:
-          token: ${{ secrets.WORKFLOW_PUSH }}
+          token: ${{ secrets.GITHUB_TOKEN }}
       - uses: gradle/wrapper-validation-action@v1.0.3
 
-      # Export build variables
+      # Export pre release (snapshot) version
       - name: Export base version properties
         id: baseProperties
         shell: bash
@@ -34,13 +34,13 @@ jobs:
           echo "$VERSION"
           echo "::set-output name=baseVersion::$VERSION"
 
-      # Prepare version for release
+      # Set release version
       - name: Trim dev suffix
-        id: setVersions
+        id: setReleaseVersions
         shell: bash
         run: ./gradlew setversions --suffix=false
 
-      # Export build variables
+      # Export release version, name and changelog
       - name: Export new commit properties
         id: properties
         shell: bash
@@ -55,7 +55,11 @@ jobs:
           echo "::set-output name=version::$VERSION"
           echo "::set-output name=changelog::$CHANGELOG"
 
-      # Commit patched Changelog and new version
+      # Update Unreleased section with the current version in the changelog
+      - name: Patch Changelog
+        run: ./gradlew patchChangelog
+
+      # Commit patched changelog and release version
       - name: Commit files
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
@@ -67,7 +71,6 @@ jobs:
         id: sha
         run: |
           RELEASE_SHA="$(git rev-parse HEAD)"
-          echo "$RELEASE_SHA"
           echo "::set-output name=releaseSha::$RELEASE_SHA"
 
   release:
@@ -83,7 +86,7 @@ jobs:
         with:
           ref: ${{ needs.prepare.outputs.releaseSha }}
 
-      # Create release
+      # Create GitHub release
       - name: Create Release
         id: createRelease
         uses: ncipollo/release-action@v1
@@ -94,13 +97,13 @@ jobs:
           body: ${{ needs.prepare.outputs.changelog }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      # Publish plugin
+      # Publish Gradle plugin
       - name: Publish plugin
         id: publish
         shell: bash
         run: ./gradlew publishPlugins -Pgradle.publish.key=${{ secrets.GRADLE_PUBLISH_KEY }} -Pgradle.publish.secret=${{ secrets.GRADLE_PUBLISH_SECRET }}
 
-      # Delete generated release
+      # Delete promoted pre release
       - name: Delete previous release
         id: deletePreviousRelease
         uses: dev-drprasad/delete-tag-and-release@v0.2.0
@@ -120,21 +123,17 @@ jobs:
           java-version: 15
       - uses: actions/checkout@v2
         with:
-          token: ${{ secrets.WORKFLOW_PUSH }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           ref: ${{ github.event.ref }}
 
-      # Prepare version for release
+      # Set next dev version
       - name: Increment version for dev
-        id: setVersions
+        id: setDevVersions
         shell: bash
         run: ./gradlew setversions --suffix=true --increment=technical
 
-      # Update Unreleased section with the current version
-      - name: Patch Changelog
-        run: ./gradlew patchChangelog
-
-      # Commit patched Changelog and new version
+      # Commit dev version
       - name: Commit files
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: "Finalize release"
+          commit_message: "To dev version"

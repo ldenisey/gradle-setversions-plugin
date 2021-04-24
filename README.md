@@ -1,3 +1,4 @@
+[![Gradle Plugin](https://img.shields.io/maven-metadata/v.svg?label=Gradle%20Plugin&color=blue&metadataUrl=https://plugins.gradle.org/m2/com/github/ldenisey/setversions/com.github.ldenisey.setversions.gradle.plugin/maven-metadata.xml)](https://plugins.gradle.org/plugin/com.github.ldenisey.setversions)
 [![Build](https://github.com/ldenisey/gradle-setversions-plugin/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/ldenisey/gradle-setversions-plugin/actions/workflows/build.yml)
 
 # Gradle Set Versions Plugin

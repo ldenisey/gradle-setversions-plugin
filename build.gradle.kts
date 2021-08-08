@@ -9,10 +9,10 @@ plugins {
     kotlin("jvm") version "1.4.32"
 
     id("com.github.ldenisey.setversions") version "1.0.0"
-    id("org.jetbrains.changelog") version "1.1.2"
+    id("org.jetbrains.changelog") version "1.2.1"
 
     id("maven-publish")
-    id("com.gradle.plugin-publish") version "0.14.0"
+    id("com.gradle.plugin-publish") version "0.15.0"
 }
 
 group = "com.github.ldenisey"
@@ -21,7 +21,7 @@ version = "1.0.1-SNAPSHOT"
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     api("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.4.21")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter")
     testImplementation(gradleTestKit())
 }
@@ -75,5 +75,5 @@ pluginBundle {
 
 // Read more: https://github.com/JetBrains/gradle-changelog-plugin
 changelog {
-    version = "${project.version}"
+    version.set("${project.version}")
 }

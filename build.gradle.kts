@@ -6,7 +6,7 @@ repositories {
 
 plugins {
     `java-gradle-plugin`
-    kotlin("jvm") version "1.4.32"
+    kotlin("jvm") version "1.6.21"
 
     id("com.github.ldenisey.setversions") version "1.0.0"
     id("org.jetbrains.changelog") version "1.2.1"

@@ -8,7 +8,7 @@ plugins {
     `java-gradle-plugin`
     kotlin("jvm") version "1.6.21"
 
-    id("com.github.ldenisey.setversions") version "1.0.0"
+    id("com.github.ldenisey.setversions") version "1.0.1"
     id("org.jetbrains.changelog") version "1.3.1"
 
     id("maven-publish")

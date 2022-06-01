@@ -16,7 +16,7 @@ plugins {
 }
 
 group = "com.github.ldenisey"
-version = "1.0.1"
+version = "1.0.2-SNAPSHOT"
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))

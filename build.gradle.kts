@@ -12,7 +12,7 @@ plugins {
     id("org.jetbrains.changelog") version "1.3.1"
 
     id("maven-publish")
-    id("com.gradle.plugin-publish") version "0.21.0"
+    id("com.gradle.plugin-publish") version "1.0.0"
 }
 
 group = "com.github.ldenisey"

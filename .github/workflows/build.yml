@@ -1,6 +1,7 @@
 # GitHub Actions Workflow created for testing and preparing the plugin release in following steps:
 # - validate Gradle Wrapper,
 # - run build tasks.
+# - create a draft release.
 #
 # Workflow is triggered on push and pull_request events.
 #

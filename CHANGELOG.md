@@ -3,17 +3,9 @@
 # Gradle Set Versions Plugin
 
 ## [Unreleased]
-### Added
 
 ### Changed
-
-### Deprecated
-
-### Removed
-
-### Fixed
-
-### Security
+- Bump dependencies and gradle wrapper to latest
 
 ## [1.0.1]
 ### Changed

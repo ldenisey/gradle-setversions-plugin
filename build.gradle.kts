@@ -6,13 +6,13 @@ repositories {
 
 plugins {
     `java-gradle-plugin`
-    kotlin("jvm") version "1.7.20"
+    kotlin("jvm") version "1.8.0"
 
     id("com.github.ldenisey.setversions") version "1.0.2"
     id("org.jetbrains.changelog") version "2.0.0"
 
     id("maven-publish")
-    id("com.gradle.plugin-publish") version "1.0.0"
+    id("com.gradle.plugin-publish") version "1.1.0"
 }
 
 group = "com.github.ldenisey"
@@ -20,7 +20,7 @@ version = "1.0.3-SNAPSHOT"
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    api("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.7.20")
+    api("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.8.0")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter")
     testImplementation(gradleTestKit())

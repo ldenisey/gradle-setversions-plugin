@@ -21,7 +21,7 @@ version = "1.0.4-SNAPSHOT"
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     api("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.8.0")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter")
     testImplementation(gradleTestKit())
 }

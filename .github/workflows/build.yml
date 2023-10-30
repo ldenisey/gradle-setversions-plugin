@@ -26,7 +26,7 @@ jobs:
           distribution: 'zulu'
           java-version: 15
       - uses: actions/checkout@v3
-      - uses: gradle/wrapper-validation-action@v1.0.6
+      - uses: gradle/wrapper-validation-action@v1.1.0
 
       # Export build variables
       - name: Export Properties

@@ -25,7 +25,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 15
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: gradle/wrapper-validation-action@v1.0.6
 
       # Export build variables
@@ -55,7 +55,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 15
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       # Build
       - name: Build
@@ -69,7 +69,7 @@ jobs:
     needs: [ check, build ]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       # Delete existing release if needed
       - name: Delete previous release

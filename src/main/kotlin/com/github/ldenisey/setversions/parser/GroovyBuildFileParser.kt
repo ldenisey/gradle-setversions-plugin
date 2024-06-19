@@ -9,6 +9,7 @@ import org.codehaus.groovy.ast.expr.MethodCallExpression
 import org.codehaus.groovy.ast.stmt.BlockStatement
 import org.codehaus.groovy.ast.stmt.ExpressionStatement
 import org.codehaus.groovy.ast.stmt.ReturnStatement
+import org.gradle.internal.impldep.org.apache.commons.lang.ArrayUtils
 import java.io.File
 
 class GroovyBuildFileParser(file: File) : BuildFileParser(file) {
@@ -40,7 +41,12 @@ class GroovyBuildFileParser(file: File) : BuildFileParser(file) {
     }
 
     private val astNodes: List<ASTNode> by lazy {
-        return@lazy AstBuilder().buildFromString(content)
+        var nodes :List<ASTNode> = arrayListOf(ASTNode())
+        if (content.isNotEmpty()) {
+            nodes = AstBuilder().buildFromString(content)
+        }
+
+        return@lazy nodes
     }
 
     private val versionASTExpression: Expression by lazy {

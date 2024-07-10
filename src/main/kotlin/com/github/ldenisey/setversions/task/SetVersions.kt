@@ -58,32 +58,34 @@ open class SetVersions : GetVersions() {
 
     private fun updateFromBuildFile(buildFile: File): Boolean {
         var found = false
-        val buildFileParser: BuildFileParser =
-            if (buildFile.name.endsWith(".gradle.kts")) KotlinBuildFileParser(buildFile)
-            else GroovyBuildFileParser(buildFile)
+        if (buildFile.exists()) {
+            val buildFileParser: BuildFileParser =
+                if (buildFile.name.endsWith(".gradle.kts")) KotlinBuildFileParser(buildFile)
+                else GroovyBuildFileParser(buildFile)
 
-        val versionDefinition: String? = try {
-            buildFileParser.versionDefinition
-        } catch (ignored: VersionNotFound) {
-            null
-        }
-
-        if (versionDefinition != null) {
-            if (versionDefinition.contains(currentVersion)) {
-                logger.info("Version defined in file ${buildFile.path}, updating it.")
-                updateInFile(buildFileParser)
-                found = true
-            } else if (project.tasks.size > 1 && versionDefinition.contains(computedVersion)) {
-                logger.info("Version already updated, probably in a previous task execution.")
-                found = true
-            } else {
-                logger.info("Version not defined directly in build file, looking for a variable in gradle.properties files.")
-                found = updateFromProperties(buildFileParser.versionDefinition)
+            val versionDefinition: String? = try {
+                buildFileParser.versionDefinition
+            } catch (ignored: VersionNotFound) {
+                null
             }
-        }
 
-        if (!found) {
-            logger.info("No version definition found in ${buildFile.path}.")
+            if (versionDefinition != null) {
+                if (versionDefinition.contains(currentVersion)) {
+                    logger.info("Version defined in file ${buildFile.path}, updating it.")
+                    updateInFile(buildFileParser)
+                    found = true
+                } else if (project.tasks.size > 1 && versionDefinition.contains(computedVersion)) {
+                    logger.info("Version already updated, probably in a previous task execution.")
+                    found = true
+                } else {
+                    logger.info("Version not defined directly in build file, looking for a variable in gradle.properties files.")
+                    found = updateFromProperties(buildFileParser.versionDefinition)
+                }
+            }
+
+            if (!found) {
+                logger.info("No version definition found in ${buildFile.path}.")
+            }
         }
         return found
     }

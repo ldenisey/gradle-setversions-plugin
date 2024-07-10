@@ -29,8 +29,8 @@ internal class GetVersionsTest : AbstractTaskTest() {
             .withDebug(isDebug)
             .build()
 
-        assertTrue(result.output.contains(GetVersions.MSG_UNSPECIFIED_VERSION))
-        assertTrue(result.output.contains("unspecified"))
+        assertFalse(result.output.contains(GetVersions.MSG_UNSPECIFIED_VERSION))
+        assertTrue(result.output.contains(GetVersions.UNSPECIFIED))
         assertEquals(TaskOutcome.SUCCESS, result.task(":getVersions")?.outcome)
         buildFile.delete()
     }

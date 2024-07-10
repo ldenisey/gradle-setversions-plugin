@@ -10,6 +10,32 @@ import java.io.File
 internal class SetVersionsTest : AbstractTaskTest() {
 
     @Test
+    fun `Warning when version unspecified`() {
+        val buildFile = File(projectFolder, "build.gradle")
+        buildFile.writeText(
+            """
+        plugins {
+            id("com.github.ldenisey.setversions")
+        }
+
+        group = "com.github.ldenisey"
+        """.trimIndent()
+        )
+
+        val result: BuildResult = GradleRunner.create()
+            .withProjectDir(projectFolder)
+            .withArguments("setVersions", "--new-version=1.0.0")
+            .withPluginClasspath()
+            .withDebug(isDebug)
+            .build()
+
+        assertTrue(result.output.contains(GetVersions.MSG_UNSPECIFIED_VERSION))
+        assertFalse(result.output.contains(SetVersions.MSG_DO_NOT_SET_SAME_VERSION))
+        assertEquals(TaskOutcome.SUCCESS, result.task(":setVersions")?.outcome)
+        buildFile.delete()
+    }
+
+    @Test
     fun `Warning for unchanged version`() {
         val buildFile = File(projectFolder, "build.gradle")
         buildFile.writeText(

@@ -58,7 +58,20 @@ internal class SetVersionsMultimodulesTest : AbstractTaskTest() {
             """.trimIndent()
         )
 
-        val result: BuildResult = GradleRunner.create()
+        var result: BuildResult = GradleRunner.create()
+            .withProjectDir(projectFolder)
+            .withArguments("getVersions")
+            .withPluginClasspath()
+            .withDebug(isDebug)
+            .build()
+
+        assertNull(result.task(":getVersions")?.outcome)
+        assertEquals(TaskOutcome.SUCCESS, result.task(":module1:getVersions")?.outcome)
+        assertEquals(TaskOutcome.SUCCESS, result.task(":module2:getVersions")?.outcome)
+        assertTrue(result.output.contains("1.0.0-SNAPSHOT"))
+        assertTrue(result.output.contains("2.0.0-SNAPSHOT"))
+
+        result = GradleRunner.create()
             .withProjectDir(projectFolder)
             .withArguments("setVersions", "--increment=technical", "--suffix=false")
             .withPluginClasspath()

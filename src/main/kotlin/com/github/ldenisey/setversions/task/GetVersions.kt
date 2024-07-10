@@ -10,6 +10,9 @@ import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
 
+/**
+ * GetVersions task, simply getting project version using internal api and printing it.
+ */
 open class GetVersions : DefaultTask() {
 
     companion object {
@@ -17,6 +20,7 @@ open class GetVersions : DefaultTask() {
         const val OPT_PREFIX = "prefix"
         const val OPT_SUFFIX = "suffix"
         const val OPT_INCREMENT = "increment"
+        const val UNSPECIFIED = "unspecified"
         const val MSG_NEW_VERSION_AND_SUFFIX_OR_PREFIX =
             "Options '$OPT_NEW_VERSION' can not be used with '$OPT_PREFIX' and/or '$OPT_SUFFIX'."
         const val MSG_UNSPECIFIED_VERSION = "Version is undefined, can not apply any change onto it."
@@ -59,13 +63,14 @@ open class GetVersions : DefaultTask() {
     @get:Internal
     val computedVersion: String by lazy {
         when {
-            currentVersion == "unspecified" -> {
-                logger.warn(MSG_UNSPECIFIED_VERSION)
+            currentVersion == UNSPECIFIED -> {
                 return@lazy currentVersion
             }
+
             newVersion != null -> {
                 return@lazy newVersion!!
             }
+
             else -> {
                 return@lazy FullVersion.fromString(currentVersion)
                     .incrementBaseVersion(increment)

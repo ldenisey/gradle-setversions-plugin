@@ -105,7 +105,7 @@ internal class GetVersionsMultimodulesTest : AbstractTaskTest() {
             .build()
 
         assertTrue(result.output.contains("1.0.0-SNAPSHOT"))
-        assertTrue(result.output.contains("unspecified"))
+        assertTrue(result.output.contains(GetVersions.UNSPECIFIED))
         assertNull(result.task(":getVersions")?.outcome)
         assertEquals(TaskOutcome.SUCCESS, result.task(":module1:getVersions")?.outcome)
         assertEquals(TaskOutcome.SUCCESS, result.task(":module2:getVersions")?.outcome)

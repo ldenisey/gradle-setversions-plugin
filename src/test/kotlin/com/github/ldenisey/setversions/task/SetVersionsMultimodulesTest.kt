@@ -124,6 +124,48 @@ internal class SetVersionsMultimodulesTest : AbstractTaskTest() {
     }
 
     @Test
+    internal fun `Two modules with one empty groovy build file`() {
+        val module1BuildFile = File(module1, "build.gradle")
+        module1BuildFile.writeText(
+            """
+            plugins {
+                id("com.github.ldenisey.setversions")
+            }
+
+            group = "com.github.ldenisey"
+            version = "1.0.0-SNAPSHOT"
+            """.trimIndent()
+        )
+
+        val module2BuildFile = File(module2, "build.gradle")
+        module2BuildFile.writeText("")
+
+        var result: BuildResult = GradleRunner.create()
+            .withProjectDir(projectFolder)
+            .withArguments("getVersions")
+            .withPluginClasspath()
+            .withDebug(isDebug)
+            .build()
+
+        assertNull(result.task(":getVersions")?.outcome)
+        assertEquals(TaskOutcome.SUCCESS, result.task(":module1:getVersions")?.outcome)
+        assertNull(result.task(":module2:getVersions")?.outcome)
+        assertTrue(result.output.contains("1.0.0-SNAPSHOT"))
+
+        result = GradleRunner.create()
+            .withProjectDir(projectFolder)
+            .withArguments("setVersions", "--increment=technical")
+            .withPluginClasspath()
+            .withDebug(isDebug)
+            .build()
+
+        assertNull(result.task(":setVersions")?.outcome)
+        assertEquals(TaskOutcome.SUCCESS, result.task(":module1:setVersions")?.outcome)
+        assertNull(result.task(":module2:setVersions")?.outcome)
+        assertTrue(module1BuildFile.readText().contains("1.0.1-SNAPSHOT"))
+    }
+
+    @Test
     internal fun `Two modules with one skipped`() {
         val module1BuildFile = File(module1, "build.gradle")
         module1BuildFile.writeText(
@@ -420,5 +462,4 @@ internal class SetVersionsMultimodulesTest : AbstractTaskTest() {
         assertEquals(TaskOutcome.SUCCESS, result.task(":module1:setVersions")?.outcome)
         assertEquals(TaskOutcome.SUCCESS, result.task(":module2:setVersions")?.outcome)
     }
-
 }

@@ -6,12 +6,14 @@
 ### Added
 
 ### Changed
+- Bump dependencies to latest
 
 ### Deprecated
 
 ### Removed
 
 ### Fixed
+- Changelog to release note formatting
 
 ### Security
 

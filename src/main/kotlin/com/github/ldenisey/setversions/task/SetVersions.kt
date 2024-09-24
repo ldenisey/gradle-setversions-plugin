@@ -12,6 +12,7 @@ open class SetVersions : GetVersions() {
     companion object {
         const val MSG_SKIPPED = "Version update skipped by configuration."
         const val MSG_DO_NOT_SET_SAME_VERSION = "Trying to set the same version already configured, skipping task."
+        const val MSG_VERSION_ALREADY_UPDATED = "Version already updated, probably in a previous task execution."
     }
 
     @TaskAction
@@ -20,6 +21,13 @@ open class SetVersions : GetVersions() {
             logger.info(MSG_SKIPPED)
             return
         }
+
+        // Skip if version is not defined already
+        if (currentVersion == UNSPECIFIED) {
+            logger.warn(MSG_UNSPECIFIED_VERSION)
+            return
+        }
+
         if (currentVersion == computedVersion) {
             logger.warn(MSG_DO_NOT_SET_SAME_VERSION)
             return
@@ -75,7 +83,7 @@ open class SetVersions : GetVersions() {
                     updateInFile(buildFileParser)
                     found = true
                 } else if (project.tasks.size > 1 && versionDefinition.contains(computedVersion)) {
-                    logger.info("Version already updated, probably in a previous task execution.")
+                    logger.info(MSG_VERSION_ALREADY_UPDATED)
                     found = true
                 } else {
                     logger.info("Version not defined directly in build file, looking for a variable in gradle.properties files.")
@@ -111,7 +119,7 @@ open class SetVersions : GetVersions() {
                             found = true
                         }
                     } else if (project.tasks.size > 1 && curValue == computedVersion) {
-                        logger.info("Version already updated, probably in a previous task execution.")
+                        logger.info(MSG_VERSION_ALREADY_UPDATED)
                         found = true
                     }
                 }

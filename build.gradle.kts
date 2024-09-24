@@ -6,10 +6,10 @@ repositories {
 
 plugins {
     `java-gradle-plugin`
-    kotlin("jvm") version "2.0.0"
+    kotlin("jvm") version "2.0.20"
 
     id("com.github.ldenisey.setversions") version "1.0.4"
-    id("org.jetbrains.changelog") version "2.2.0"
+    id("org.jetbrains.changelog") version "2.2.1"
 
     id("maven-publish")
     id("com.gradle.plugin-publish") version "1.2.1"
@@ -20,8 +20,8 @@ version = "1.0.5-SNAPSHOT"
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    api("org.jetbrains.kotlin:kotlin-compiler-embeddable:2.0.0")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.2")
+    api("org.jetbrains.kotlin:kotlin-compiler-embeddable:2.0.20")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.11.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter")
     testImplementation(gradleTestKit())
 }
@@ -46,31 +46,28 @@ tasks.named<Test>("test") {
 }
 
 gradlePlugin {
+    website = "https://github.com/ldenisey/gradle-setversions-plugin"
+    vcsUrl = "https://github.com/ldenisey/gradle-setversions-plugin"
     plugins {
         create("SetVersionsPlugin") {
             id = "com.github.ldenisey.setversions"
             displayName = "Gradle Set Versions Plugin"
             description = "Gradle plugin that provides tasks to modify project and modules versions."
             implementationClass = "com.github.ldenisey.setversions.SetVersionsPlugin"
+            tags = listOf(
+                "version",
+                "versioning",
+                "update",
+                "set",
+                "increment",
+                "prefix",
+                "suffix",
+                "ci",
+                "devops",
+                "continuous integration"
+            )
         }
     }
-}
-
-pluginBundle {
-    website = "https://github.com/ldenisey/gradle-setversions-plugin"
-    vcsUrl = "https://github.com/ldenisey/gradle-setversions-plugin"
-    tags = listOf(
-        "version",
-        "versioning",
-        "update",
-        "set",
-        "increment",
-        "prefix",
-        "suffix",
-        "ci",
-        "devops",
-        "continuous integration"
-    )
 }
 
 // Read more: https://github.com/JetBrains/gradle-changelog-plugin
